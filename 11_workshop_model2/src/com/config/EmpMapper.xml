@@ -1,0 +1,73 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EmpMapper">
+	<select id="selectAllEmp" resultType="EmpDTO" parameterType="hashmap">
+		select empno, ename, job, to_char(hiredate, 'YYYY/MM/DD') hiredate, sal 
+		from emp
+		<where>
+			<if test="year != null">
+				to_number(to_char(hiredate, 'YYYY')) = #{year}
+			</if>
+			<if test="dto != null">
+				ename like ('%${dto.ename_lower}%')
+				or ename like ('%${dto.ename_upper}%')
+			</if>
+		</where>
+		order by 
+		<if test="range != null">
+			sal ${range},
+		</if>
+		empno asc
+	</select>
+	
+	<insert id="insertEmp" parameterType="EmpDTO">
+		INSERT into emp (empno, ename, job, mgr, hiredate, sal)
+		VALUES (#{empno}, #{ename}, #{job}, #{mgr}, sysdate, #{sal})
+	</insert>
+	
+	<select id="selectEmpEmpno" resultType="integer">
+		select count(empno) empno
+		from emp
+		where empno = #{empno}
+	</select>
+	
+	<select id="selectEmp" resultType="EmpDTO" parameterType="int">
+		select empno, ename, job, mgr, to_char(hiredate,'YYYY/MM/DD') hiredate, sal
+		from emp
+		where empno = #{empno}
+	</select>
+
+	<select id="selectEmpJobList" resultType="String">
+		SELECT job from emp
+		GROUP by job
+	</select>
+
+	<delete id="deleteEmp" parameterType="int">
+		delete from emp
+		where empno = #{empno}
+	</delete>
+	
+	<update id="updateEmp" parameterType="EmpDTO">
+		update emp
+		set sal = #{sal},
+		job = #{job}
+		where empno = #{empno}
+	</update>
+	
+	<select id="selectTotalCount" parameterType="hashmap" resultType="int">
+		select count(*) 
+		from emp
+		<where>
+			<if test="year != null">
+				to_number(to_char(hiredate, 'YYYY')) = #{year}
+			</if>
+			<if test="dto != null">
+				ename like ('%${dto.ename_lower}%')
+				or ename like ('%${dto.ename_upper}%')
+			</if>
+		</where>
+	</select>
+	
+</mapper>
