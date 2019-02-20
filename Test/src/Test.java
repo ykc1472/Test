@@ -8,6 +8,12 @@ public class Test {
 		
 		System.out.println("Test1");
 		
+		System.out.println("Test2:Branch");
+		System.out.println("Test3:Branch");
+		
+		if(true) {
+			System.out.println("Test4:Branch");
+		}
 	}
 
 }
